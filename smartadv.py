@@ -10,20 +10,19 @@ Original file is located at
 import streamlit as st
 import pandas as pd
 
-# Simulated Data
-students = pd.DataFrame({
-    "Name": ["Alice Chen"],
-    "GPA": [2.3],
-    "Attendance": [78],
-    "Risk Score": ["High"],
-    "Goals": ["Improve GPA to 3.0"],
-    "Notes": ["Missed 2 advising sessions"],
-    "GPA History": ["3.0 -> 2.8 -> 2.5 -> 2.3"],
-    "Attendance History": ["90% -> 85% -> 80% -> 78%"],
-    "Risk History": ["Low -> Medium -> High"],
-    "Goal History": ["None -> Improve GPA to 3.0"],
-    "Advisory Notes History": ["Attended 1 -> Missed 1 -> Missed 2"]
-})
+# Simulated Data with 10 Students
+students = pd.DataFrame([
+    {"Name": "Alice Chen", "GPA": 2.3, "Attendance": 78, "Risk Score": "High", "Goals": "Improve GPA to 3.0", "Notes": "Missed 2 advising sessions", "GPA History": "3.0 -> 2.8 -> 2.5 -> 2.3", "Attendance History": "90% -> 85% -> 80% -> 78%", "Risk History": "Low -> Medium -> High", "Goal History": "None -> Improve GPA to 3.0", "Advisory Notes History": "Attended 1 -> Missed 1 -> Missed 2"},
+    {"Name": "Ben Torres", "GPA": 3.2, "Attendance": 88, "Risk Score": "Low", "Goals": "Maintain GPA and find internship", "Notes": "Looking for resume help", "GPA History": "3.0 -> 3.1 -> 3.2", "Attendance History": "85% -> 88% -> 88%", "Risk History": "Low -> Low -> Low", "Goal History": "None -> Find internship", "Advisory Notes History": "Attended 3 sessions"},
+    {"Name": "Carla Gomez", "GPA": 2.8, "Attendance": 82, "Risk Score": "Medium", "Goals": "Graduate with 3.0 GPA", "Notes": "Struggling with math", "GPA History": "2.9 -> 2.7 -> 2.8", "Attendance History": "88% -> 85% -> 82%", "Risk History": "Low -> Medium", "Goal History": "None -> 3.0 GPA", "Advisory Notes History": "Attended all, flagged for math help"},
+    {"Name": "David Kim", "GPA": 3.6, "Attendance": 93, "Risk Score": "Low", "Goals": "Apply to grad school", "Notes": "Needs letter of rec", "GPA History": "3.5 -> 3.6", "Attendance History": "92% -> 93%", "Risk History": "Low", "Goal History": "None -> Grad school", "Advisory Notes History": "Advisor letter requested"},
+    {"Name": "Elena Roberts", "GPA": 2.5, "Attendance": 75, "Risk Score": "High", "Goals": "Recover from probation", "Notes": "On academic probation", "GPA History": "2.7 -> 2.6 -> 2.5", "Attendance History": "82% -> 78% -> 75%", "Risk History": "Medium -> High", "Goal History": "None -> Avoid suspension", "Advisory Notes History": "Probation plan started"},
+    {"Name": "Frank Li", "GPA": 2.9, "Attendance": 84, "Risk Score": "Medium", "Goals": "Transfer to another school", "Notes": "Exploring options", "GPA History": "3.1 -> 3.0 -> 2.9", "Attendance History": "90% -> 85% -> 84%", "Risk History": "Low -> Medium", "Goal History": "Explore transfer", "Advisory Notes History": "Transfer counseling scheduled"},
+    {"Name": "Grace Patel", "GPA": 3.4, "Attendance": 91, "Risk Score": "Low", "Goals": "Join honors program", "Notes": "Considering research", "GPA History": "3.3 -> 3.4", "Attendance History": "90% -> 91%", "Risk History": "Low", "Goal History": "Join honors", "Advisory Notes History": "Honors application in progress"},
+    {"Name": "Hassan Ali", "GPA": 2.0, "Attendance": 70, "Risk Score": "High", "Goals": "Avoid suspension", "Notes": "Missed 3 classes", "GPA History": "2.3 -> 2.1 -> 2.0", "Attendance History": "80% -> 75% -> 70%", "Risk History": "Medium -> High", "Goal History": "Avoid suspension", "Advisory Notes History": "Outreach from retention office"},
+    {"Name": "Isabelle Moore", "GPA": 2.6, "Attendance": 79, "Risk Score": "Medium", "Goals": "Improve study habits", "Notes": "Feels overwhelmed", "GPA History": "2.8 -> 2.7 -> 2.6", "Attendance History": "85% -> 82% -> 79%", "Risk History": "Low -> Medium", "Goal History": "Improve study habits", "Advisory Notes History": "Referred to learning center"},
+    {"Name": "Jason Wright", "GPA": 3.0, "Attendance": 87, "Risk Score": "Low", "Goals": "Graduate on time", "Notes": "Needs capstone help", "GPA History": "2.9 -> 3.0", "Attendance History": "85% -> 87%", "Risk History": "Low", "Goal History": "Graduate on time", "Advisory Notes History": "Capstone advisor assigned"},
+])
 
 st.set_page_config(page_title="Smart Advisor Assistant", layout="centered")
 st.title("Smart Advisor Assistant")
@@ -36,18 +35,15 @@ student = students[students["Name"] == student_name].iloc[0]
 
 # Student Performance Summary
 st.markdown("### 🎓 Student Performance Summary")
-st.markdown(f"- **GPA:** {student['GPA']}")
-st.markdown("  - GPA of 2.3 reflects academic decline. Indicates need for tutoring, course load review, and closer monitoring.")
-st.markdown(f"- **Attendance:** {student['Attendance']}%")
-st.markdown("  - Attendance below 80% shows disengagement. Student may need flexible support or incentives to attend.")
-st.markdown(f"- **Risk Level:** {student['Risk Score']}")
-st.markdown("  - High risk due to low GPA, poor attendance, and missed sessions. Requires urgent, multi-faceted support plan.")
-st.markdown(f"- **Goals:** {student['Goals']}")
-st.markdown("  - Student goal is positive. Needs to break it into short-term steps with progress checks.")
-st.markdown(f"- **Advisor Notes:** {student['Notes']}")
-st.markdown("  - Missed advising sessions suggest disengagement or barriers. Follow-up and flexibility are key.")
 
-# Recommendations
+st.markdown(f"**GPA: {student['GPA']}**")
+st.markdown(f"**Attendance: {student['Attendance']}%**")
+st.markdown(f"**Risk Level: {student['Risk Score']}**")
+st.markdown(f"**Goals:** {student['Goals']}")
+st.markdown(f"**Advisor Notes:** {student['Notes']}")
+
+# Advisor Recommendations
+st.markdown("### 💡 Advisor Recommendations")
 def get_advice(risk):
     if risk == "High":
         return [
@@ -58,54 +54,38 @@ def get_advice(risk):
         ]
     elif risk == "Medium":
         return [
-            "Career exploration support",
-            "Stress management resources",
-            "Monitor GPA monthly",
-            "Advisor follow-up in 2 weeks"
+            "Join study skills workshops",
+            "Biweekly academic advising",
+            "Improve class participation",
+            "Monitor GPA and attendance"
         ]
     else:
         return [
-            "Internship & honors advising",
-            "Grad school prep resources",
-            "Optional monthly check-ins"
+            "Career development coaching",
+            "Explore internships or research",
+            "Attend honors or grad prep events",
+            "Monthly advising check-in"
         ]
 
-st.markdown("### 💡 Advisor Recommendations")
 for rec in get_advice(student['Risk Score']):
     st.markdown(f"- {rec}")
 
-if student['Risk Score'] == 'High':
-    st.markdown("""
-    **Explanation:**
-    - Tutoring builds academic foundation and confidence.
-    - Weekly check-ins ensure accountability.
-    - Mental health support helps address hidden stressors.
-    - Setting achievable GPA targets motivates consistent effort.
-    """)
-
 # Historical Trends
 st.markdown("### 🧾 Historical Trends")
-st.markdown(f"- **GPA History:** {student['GPA History']}")
-st.markdown("  - Trend shows consistent GPA decline. Student may lack foundational skills or be overwhelmed.")
-st.markdown(f"- **Attendance History:** {student['Attendance History']}")
-st.markdown("  - Decreasing attendance likely affects class comprehension. Barriers should be explored.")
-st.markdown(f"- **Risk Level History:** {student['Risk History']}")
-st.markdown("  - Risk level escalation indicates cumulative challenges. Must act fast to reverse the trend.")
-st.markdown(f"- **Goal History:** {student['Goal History']}")
-st.markdown("  - Goal improvement shows growing awareness. Advisors should build on this momentum.")
-st.markdown(f"- **Advisory Notes History:** {student['Advisory Notes History']}")
-st.markdown("  - Missed advising suggests disengagement or unmet needs. Offer flexible and proactive outreach.")
+st.markdown(f"**GPA History:** {student['GPA History']}")
+st.markdown(f"**Attendance History:** {student['Attendance History']}")
+st.markdown(f"**Risk Level History:** {student['Risk History']}")
+st.markdown(f"**Goal History:** {student['Goal History']}")
+st.markdown(f"**Advisory Notes History:** {student['Advisory Notes History']}")
 
 # AI Assistant Insight
 st.markdown("### 🧠 AI Assistant Insight")
 insight = f'''
-- **GPA Decline:** {student["GPA History"]} -> Indicates long-term academic difficulty.
-- **Attendance Drop:** {student["Attendance History"]} -> May signal disengagement or external factors.
-- **Risk Escalation:** {student["Risk History"]} -> Multiple semesters of red flags.
-- **Goal Evolution:** {student["Goal History"]} -> Shows increased focus or recognition of academic gap.
-- **Advisory Notes:** {student["Advisory Notes History"]} -> Growing support needs.
-
-GenAI Insight: Patterns suggest early-stage academic risk. A coordinated action plan is required combining academic, mental health, and advising strategies.
+- GPA Trend: {student["GPA History"]}
+- Attendance Trend: {student["Attendance History"]}
+- Risk History: {student["Risk History"]}
+- Goal Progress: {student["Goal History"]}
+- Advisory Engagement: {student["Advisory Notes History"]}
 '''
 st.info(insight)
 
@@ -118,10 +98,10 @@ Advising Summary for {student_name}
 - Student Goals: {student["Goals"]}
 - Advisor Notes: {student["Notes"]}
 
-AI Advisor Recommendation:
+AI Advisor Recommendations:
 {chr(10).join(get_advice(student["Risk Score"]))}
 
-GenAI Insight:
+AI Insight:
 {insight}
 '''
 st.text_area("Auto-Generated Report", value=report, height=300)
