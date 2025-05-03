@@ -37,10 +37,15 @@ student = students[students["Name"] == student_name].iloc[0]
 # Student Performance Summary
 st.markdown("### 🎓 Student Performance Summary")
 st.markdown(f"- **GPA:** {student['GPA']}")
+st.markdown("  - GPA of 2.3 reflects academic decline. Indicates need for tutoring, course load review, and closer monitoring.")
 st.markdown(f"- **Attendance:** {student['Attendance']}%")
+st.markdown("  - Attendance below 80% shows disengagement. Student may need flexible support or incentives to attend.")
 st.markdown(f"- **Risk Level:** {student['Risk Score']}")
+st.markdown("  - High risk due to low GPA, poor attendance, and missed sessions. Requires urgent, multi-faceted support plan.")
 st.markdown(f"- **Goals:** {student['Goals']}")
+st.markdown("  - Student goal is positive. Needs to break it into short-term steps with progress checks.")
 st.markdown(f"- **Advisor Notes:** {student['Notes']}")
+st.markdown("  - Missed advising sessions suggest disengagement or barriers. Follow-up and flexibility are key.")
 
 # Recommendations
 def get_advice(risk):
@@ -69,13 +74,27 @@ st.markdown("### 💡 Advisor Recommendations")
 for rec in get_advice(student['Risk Score']):
     st.markdown(f"- {rec}")
 
+if student['Risk Score'] == 'High':
+    st.markdown("""
+    **Explanation:**
+    - Tutoring builds academic foundation and confidence.
+    - Weekly check-ins ensure accountability.
+    - Mental health support helps address hidden stressors.
+    - Setting achievable GPA targets motivates consistent effort.
+    """)
+
 # Historical Trends
-st.markdown("### 🧮 Historical Trends")
+st.markdown("### 🧾 Historical Trends")
 st.markdown(f"- **GPA History:** {student['GPA History']}")
+st.markdown("  - Trend shows consistent GPA decline. Student may lack foundational skills or be overwhelmed.")
 st.markdown(f"- **Attendance History:** {student['Attendance History']}")
+st.markdown("  - Decreasing attendance likely affects class comprehension. Barriers should be explored.")
 st.markdown(f"- **Risk Level History:** {student['Risk History']}")
+st.markdown("  - Risk level escalation indicates cumulative challenges. Must act fast to reverse the trend.")
 st.markdown(f"- **Goal History:** {student['Goal History']}")
+st.markdown("  - Goal improvement shows growing awareness. Advisors should build on this momentum.")
 st.markdown(f"- **Advisory Notes History:** {student['Advisory Notes History']}")
+st.markdown("  - Missed advising suggests disengagement or unmet needs. Offer flexible and proactive outreach.")
 
 # AI Assistant Insight
 st.markdown("### 🧠 AI Assistant Insight")
@@ -91,7 +110,7 @@ GenAI Insight: Patterns suggest early-stage academic risk. A coordinated action 
 st.info(insight)
 
 # Advising Session Summary
-st.markdown("### 🗘️ Advising Session Summary")
+st.markdown("### 📝 Advising Session Summary")
 report = f'''
 Advising Summary for {student_name}
 
