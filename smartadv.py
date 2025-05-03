@@ -7,16 +7,10 @@ Original file is located at
     https://colab.research.google.com/drive/1NhVkIv9Vpcj2GYYMbNCLTYbIrlZjngdt
 """
 
-# Revert to the original centered layout and apply enhancements per user instruction:
-# - Keep only student dropdown in sidebar.
-# - Show historical data (GPA, Attendance, Risk Level, Goals, Notes) under Advisor Recommendations.
-# - Place AI Assistant Insight directly before Advising Session Summary.
-
-app_code_centered_layout = """
 import streamlit as st
 import pandas as pd
 
-# Simulated Single-Student Data
+# Simulated Data
 students = pd.DataFrame({
     "Name": ["Alice Chen"],
     "GPA": [2.3],
@@ -31,26 +25,24 @@ students = pd.DataFrame({
     "Advisory Notes History": ["Attended 1 -> Missed 1 -> Missed 2"]
 })
 
-# Layout Setup
-st.set_page_config(page_title="Smart Advisor Assistant", layout="wide")
+st.set_page_config(page_title="Smart Advisor Assistant", layout="centered")
 st.title("Smart Advisor Assistant")
 st.subheader("AI-Powered Academic Risk Monitoring & Action Plans")
 st.markdown("---")
 
-# Sidebar: Student Selection Only
-student_name = st.sidebar.selectbox("Select a student", students["Name"])
+# Sidebar
+student_name = st.sidebar.selectbox("🔍 Select a student", students["Name"])
 student = students[students["Name"] == student_name].iloc[0]
 
-# Section: Student Summary
+# Student Performance Summary
 st.markdown("### 🎓 Student Performance Summary")
-st.write(f"**GPA:** {student['GPA']}")
-st.write(f"**Attendance:** {student['Attendance']}%")
-st.write(f"**Risk Level:** {student['Risk Score']}")
-st.write(f"**Goals:** {student['Goals']}")
-st.write(f"**Advisor Notes:** {student['Notes']}")
+st.markdown(f"- **GPA:** {student['GPA']}")
+st.markdown(f"- **Attendance:** {student['Attendance']}%")
+st.markdown(f"- **Risk Level:** {student['Risk Score']}")
+st.markdown(f"- **Goals:** {student['Goals']}")
+st.markdown(f"- **Advisor Notes:** {student['Notes']}")
 
-# Section: Advisor Recommendations
-st.markdown("### 💡 Advisor Recommendations")
+# Recommendations
 def get_advice(risk):
     if risk == "High":
         return [
@@ -72,51 +64,46 @@ def get_advice(risk):
             "Grad school prep resources",
             "Optional monthly check-ins"
         ]
-recommendations = get_advice(student["Risk Score"])
-for item in recommendations:
-    st.markdown(f"- {item}")
 
-# Section: Historical Data
-st.markdown("### 🧾 Historical Academic Trends")
-st.write(f"**GPA History:** {student['GPA History']}")
-st.write(f"**Attendance History:** {student['Attendance History']}")
-st.write(f"**Risk Level History:** {student['Risk History']}")
-st.write(f"**Goal History:** {student['Goal History']}")
-st.write(f"**Advisory Notes History:** {student['Advisory Notes History']}")
+st.markdown("### 💡 Advisor Recommendations")
+for rec in get_advice(student['Risk Score']):
+    st.markdown(f"- {rec}")
 
-# Section: AI Assistant Insight
+# Historical Trends
+st.markdown("### 🧮 Historical Trends")
+st.markdown(f"- **GPA History:** {student['GPA History']}")
+st.markdown(f"- **Attendance History:** {student['Attendance History']}")
+st.markdown(f"- **Risk Level History:** {student['Risk History']}")
+st.markdown(f"- **Goal History:** {student['Goal History']}")
+st.markdown(f"- **Advisory Notes History:** {student['Advisory Notes History']}")
+
+# AI Assistant Insight
 st.markdown("### 🧠 AI Assistant Insight")
 insight = f'''
-**GenAI Analysis of Student Patterns**
+- **GPA Decline:** {student["GPA History"]} -> Indicates long-term academic difficulty.
+- **Attendance Drop:** {student["Attendance History"]} -> May signal disengagement or external factors.
+- **Risk Escalation:** {student["Risk History"]} -> Multiple semesters of red flags.
+- **Goal Evolution:** {student["Goal History"]} -> Shows increased focus or recognition of academic gap.
+- **Advisory Notes:** {student["Advisory Notes History"]} -> Growing support needs.
 
-- **GPA Decline:** {student["GPA History"]} → Indicates progressive academic challenges.
-- **Attendance Drop:** {student["Attendance History"]} → Suggests growing disengagement or external obstacles.
-- **Risk Escalation:** {student["Risk History"]} → Shows compounding academic and behavioral concerns.
-- **Goal Clarity:** {student["Goal History"]} → Reflects increased academic focus or motivation.
-- **Advisory Flags:** {student["Advisory Notes History"]} → Highlights need for structured intervention.
-
-➡️ *AI Summary:* These cross-category shifts suggest early academic risk. Recommend action plan that combines academic support, mental health services, and advising follow-ups.
+GenAI Insight: Patterns suggest early-stage academic risk. A coordinated action plan is required combining academic, mental health, and advising strategies.
 '''
 st.info(insight)
 
-# Section: Advising Session Summary
-st.markdown("### 📝 Advising Session Summary")
-report = (
-    f"Advising Summary for {student_name}\\n\\n"
-    f"- Risk Level: {student['Risk Score']}\\n"
-    f"- Student Goals: {student['Goals']}\\n"
-    f"- Advisor Notes: {student['Notes']}\\n\\n"
-    "AI Advisor Recommendation:\\n"
-    + "\\n".join(recommendations) +
-    "\\n\\nAI Insight Summary:\\n" + insight.replace("**", "").replace("➡️", "").replace("*", "")
-)
+# Advising Session Summary
+st.markdown("### 🗘️ Advising Session Summary")
+report = f'''
+Advising Summary for {student_name}
 
+- Risk Level: {student["Risk Score"]}
+- Student Goals: {student["Goals"]}
+- Advisor Notes: {student["Notes"]}
+
+AI Advisor Recommendation:
+{chr(10).join(get_advice(student["Risk Score"]))}
+
+GenAI Insight:
+{insight}
+'''
 st.text_area("Auto-Generated Report", value=report, height=300)
 st.download_button("Download Session Report", data=report, file_name=f"{student_name}_advising_summary.txt", mime="text/plain")
-"""
-
-# Save restored layout with enhancements
-with open("smart_advisor_app/app.py", "w") as f:
-    f.write(app_code_centered_layout)
-
-"smart_advisor_app/app.py"
