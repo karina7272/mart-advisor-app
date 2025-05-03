@@ -59,19 +59,31 @@ st.markdown(f"**Risk Level History:** {student['Risk History']}")
 st.markdown(f"**Goal History:** {student['Goal History']}")
 st.markdown(f"**Advisory Notes History:** {student['Advisory Notes History']}")
 
-# Chart Visualization
-fig, ax = plt.subplots()
-ax.bar(["GPA"], [student['GPA']], color='orange')
-ax.set_ylim(0, 4)
-st.pyplot(fig)
+# Chart Visualization of GPA History
+try:
+    gpa_values = [float(val) for val in student['GPA History'].replace('%', '').replace('->', '').split() if val.replace('.', '').isdigit()]
+    fig, ax = plt.subplots()
+    ax.plot(range(1, len(gpa_values)+1), gpa_values, marker='o', color='orange')
+    ax.set_title("GPA Over Time")
+    ax.set_ylabel("GPA")
+    ax.set_xlabel("Semester")
+    ax.set_ylim(0, 4)
+    st.pyplot(fig)
+except:
+    st.warning("Could not generate GPA chart due to format issues.")
 
 # AI Assistant Insight
 st.subheader("🧠 AI Assistant Insight")
-st.info("High risk likely due to GPA decline, missed sessions, and drop in attendance. Recommend staged recovery plan and tracking.")
+ai_insight = """
+The AI system has identified a pattern of decline in key academic metrics for this student. GPA deterioration over multiple semesters indicates unresolved learning gaps or difficulty with core courses. Attendance rates have also declined, reinforcing concerns about disengagement. Historical advising notes reveal missed sessions, further compounding the student's academic risks. A structured plan with incremental goals is advised. The student shows potential with articulated goals but lacks consistency. Early intervention could prevent long-term academic probation. Consistent academic monitoring, weekly advising, and targeted support are essential. The student's shift in goals suggests growing awareness and willingness to improve. However, behavioral follow-through is inconsistent. Advisors should apply motivational interviewing techniques. The plan must also incorporate stress-management or counseling referrals. Peer mentorship and group study support can improve engagement. The GPA history suggests poor foundational understanding. Remediation or core skill workshops could boost outcomes. It is important to clarify course selection and balance workload. Positive reinforcement may enhance commitment. Academic advisors should track performance by milestone. AI identifies transition points where risk spikes occur. The student’s trend mirrors common dropout predictors. Realigning academic identity and belonging could help. Use of retention dashboards and real-time risk scoring is encouraged.
+"""
+st.info(ai_insight)
 
 # Advising Session Summary
 st.subheader("📋 Advising Session Summary")
-advice_text = f"AI Advisor Plan: {student['Risk Score']} Risk. GPA: {student['GPA']}. Attendance: {student['Attendance']}%. Goals: {student['Goals']}"
+advice_text = f"""
+The student is currently categorized under a {student['Risk Score']} risk level based on recent academic indicators. With a GPA of {student['GPA']} and attendance at {student['Attendance']}%, the student falls below key institutional benchmarks. Their academic goals—{student['Goals']}—are commendable but require actionable planning. Missed advising sessions suggest a barrier to engagement that needs further exploration. A weekly advising cadence is recommended to build accountability. Tutoring in high-impact subjects should be prioritized. Counseling services may be required depending on stressor indicators. Attendance incentives or digital check-ins can stabilize patterns. Goal setting must be time-bound and tied to progress milestones. The plan must include GPA benchmarks by semester. The student’s risk level has escalated steadily. Past interventions, if any, should be reviewed for effectiveness. Faculty coordination is critical to maintain academic alignment. A student success coach may assist in holistic support. Reminders and nudges should be systemized through digital tools. The narrative report must be reviewed jointly with the student. Success should be visualized and celebrated. Communication plans must respect student preferences. Flexibility with support delivery channels (e.g., walk-ins, SMS) improves reach. A shared advisor-student checklist can monitor completion.
+"""
 st.text_area("Auto-Generated Report", value=advice_text, height=250)
 st.download_button("📥 Download Session Report", data=advice_text, file_name=f"{student_name}_session.txt", mime="text/plain")
 
