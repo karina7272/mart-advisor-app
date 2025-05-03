@@ -14,143 +14,71 @@ import matplotlib.pyplot as plt
 # Simulated Data with 10 Students
 students = pd.DataFrame([
     {"Name": "Alice Chen", "GPA": 2.3, "Attendance": 78, "Risk Score": "High", "Goals": "Improve GPA to 3.0", "Notes": "Missed 2 advising sessions", "GPA History": "3.0 -> 2.8 -> 2.5 -> 2.3", "Attendance History": "90% -> 85% -> 80% -> 78%", "Risk History": "Low -> Medium -> High", "Goal History": "None -> Improve GPA to 3.0", "Advisory Notes History": "Attended 1 -> Missed 1 -> Missed 2"},
-    # Additional student entries omitted for brevity...
+    {"Name": "Brian Lee", "GPA": 3.4, "Attendance": 95, "Risk Score": "Low", "Goals": "Graduate with honors", "Notes": "Excellent participation", "GPA History": "3.2 -> 3.3 -> 3.4 -> 3.4", "Attendance History": "92% -> 94% -> 95% -> 95%", "Risk History": "Low -> Low -> Low", "Goal History": "None -> Graduate with honors", "Advisory Notes History": "All attended"},
+    {"Name": "Clara Diaz", "GPA": 2.7, "Attendance": 88, "Risk Score": "Medium", "Goals": "Pass all core courses", "Notes": "Missed 1 session", "GPA History": "2.9 -> 2.8 -> 2.7 -> 2.7", "Attendance History": "90% -> 89% -> 87% -> 88%", "Risk History": "Low -> Medium -> Medium", "Goal History": "Improve -> Pass core", "Advisory Notes History": "Attended 2 -> Missed 1"},
+    {"Name": "David Kim", "GPA": 1.9, "Attendance": 60, "Risk Score": "High", "Goals": "Avoid probation", "Notes": "No-show 3 sessions", "GPA History": "2.5 -> 2.1 -> 2.0 -> 1.9", "Attendance History": "80% -> 75% -> 70% -> 60%", "Risk History": "Medium -> High -> High", "Goal History": "None -> Avoid probation", "Advisory Notes History": "Missed 3"},
+    {"Name": "Emma Patel", "GPA": 3.8, "Attendance": 97, "Risk Score": "Low", "Goals": "Apply to graduate school", "Notes": "N/A", "GPA History": "3.6 -> 3.7 -> 3.8 -> 3.8", "Attendance History": "95% -> 96% -> 97%", "Risk History": "Low", "Goal History": "Explore -> Apply to grad", "Advisory Notes History": "All attended"},
+    {"Name": "Frank Soto", "GPA": 2.5, "Attendance": 85, "Risk Score": "Medium", "Goals": "Raise GPA for scholarship", "Notes": "Missed 1 check-in", "GPA History": "2.8 -> 2.6 -> 2.5", "Attendance History": "88% -> 87% -> 85%", "Risk History": "Medium", "Goal History": "Maintain -> Raise GPA", "Advisory Notes History": "Attended -> Missed"},
+    {"Name": "Grace Wang", "GPA": 3.1, "Attendance": 89, "Risk Score": "Low", "Goals": "Maintain performance", "Notes": "On track", "GPA History": "3.0 -> 3.1 -> 3.1", "Attendance History": "90% -> 89%", "Risk History": "Low", "Goal History": "Maintain", "Advisory Notes History": "All attended"},
+    {"Name": "Hassan Ali", "GPA": 2.0, "Attendance": 75, "Risk Score": "High", "Goals": "Complete gen ed", "Notes": "At risk of withdrawal", "GPA History": "2.3 -> 2.1 -> 2.0", "Attendance History": "82% -> 78% -> 75%", "Risk History": "Medium -> High", "Goal History": "General completion", "Advisory Notes History": "Attended 1 -> Missed 2"},
+    {"Name": "Isabella Cruz", "GPA": 2.9, "Attendance": 82, "Risk Score": "Medium", "Goals": "Stay eligible for athletics", "Notes": "Pending team advisor review", "GPA History": "3.0 -> 2.9 -> 2.9", "Attendance History": "85% -> 83% -> 82%", "Risk History": "Low -> Medium", "Goal History": "Athletics eligible", "Advisory Notes History": "Reviewed monthly"},
+    {"Name": "Jamal Brown", "GPA": 1.7, "Attendance": 58, "Risk Score": "High", "Goals": "Avoid academic dismissal", "Notes": "No advising contact in 2 months", "GPA History": "2.0 -> 1.8 -> 1.7", "Attendance History": "70% -> 65% -> 58%", "Risk History": "High", "Goal History": "None -> Avoid dismissal", "Advisory Notes History": "Missed 3 in a row"},
 ])
 
-st.set_page_config(page_title="Smart Advisor Assistant", layout="centered")
-st.title("Smart Advisor Assistant")
-st.subheader("AI-Powered Academic Risk Monitoring & Action Plans")
-st.markdown("---")
-
-# Sidebar
 student_name = st.sidebar.selectbox("🔍 Select a student", students["Name"])
 student = students[students["Name"] == student_name].iloc[0]
 
-# Display Sections
-st.markdown("### 🎓 Student Performance Summary")
-st.markdown(f"**GPA: {student['GPA']}**")
-st.markdown(f"**Attendance: {student['Attendance']}%**")
-st.markdown(f"**Risk Level: {student['Risk Score']}**")
+st.title("Smart Advisor Assistant")
+st.markdown("AI-Powered Academic Risk Monitoring & Action Plans")
+
+# Student Performance Summary
+st.subheader("🎓 Student Performance Summary")
+st.markdown(f"**GPA:** {student['GPA']}")
+st.markdown("GPA of 2.3 reflects academic decline. Indicates need for tutoring, course load review, and closer monitoring.")
+st.markdown(f"**Attendance:** {student['Attendance']}%")
+st.markdown("Attendance below 80% shows disengagement. Student may need flexible support or incentives to attend.")
+st.markdown(f"**Risk Level:** {student['Risk Score']}")
+st.markdown("High risk due to low GPA, poor attendance, and missed sessions. Requires urgent, multi-faceted support plan.")
 st.markdown(f"**Goals:** {student['Goals']}")
+st.markdown("Student goal is positive. Needs to break it into short-term steps with progress checks.")
 st.markdown(f"**Advisor Notes:** {student['Notes']}")
+st.markdown("Missed advising sessions suggest disengagement or barriers. Follow-up and flexibility are key.")
 
-# GPA Chart
-st.markdown("#### GPA Trend Chart")
-gpa_vals = [float(x.strip()) for x in student["GPA History"].split("->")] if "->" in student["GPA History"] else [student["GPA"]]
-plt.figure(figsize=(4, 2))
-plt.plot(gpa_vals, marker='o')
-plt.title("GPA Over Time")
-plt.ylabel("GPA")
-st.pyplot(plt)
-
-# Advisor Recommendations with Checkboxes
-st.markdown("### 💡 Advisor Recommendations")
-def get_advice(risk):
-    if risk == "High":
-        return ["Immediate tutoring referrals", "Weekly advising check-ins", "Connect to mental health/counseling", "Set GPA target (e.g., 2.5 next semester)"]
-    elif risk == "Medium":
-        return ["Join study skills workshops", "Biweekly academic advising", "Improve class participation", "Monitor GPA and attendance"]
-    else:
-        return ["Career development coaching", "Explore internships or research", "Attend honors or grad prep events", "Monthly advising check-in"]
-
-advice_steps = get_advice(student['Risk Score'])
-completed = []
-for i, step in enumerate(advice_steps, start=1):
-    done = st.checkbox(f"Step {i}: {step}", key=f"advice_step_{i}")
-    completed.append((step, done))
+# Advisor Recommendations
+st.subheader("💡 Advisor Recommendations")
+step1 = st.checkbox("1️⃣ Immediate tutoring referrals")
+step2 = st.checkbox("2️⃣ Weekly advising check-ins")
+step3 = st.checkbox("3️⃣ Connect to mental health/counseling")
+step4 = st.checkbox("4️⃣ Set GPA target (e.g., 2.5 next semester)")
 
 # Historical Trends
-st.markdown("### 🧾 Historical Trends")
+st.subheader("🗂️ Historical Trends")
 st.markdown(f"**GPA History:** {student['GPA History']}")
 st.markdown(f"**Attendance History:** {student['Attendance History']}")
 st.markdown(f"**Risk Level History:** {student['Risk History']}")
 st.markdown(f"**Goal History:** {student['Goal History']}")
 st.markdown(f"**Advisory Notes History:** {student['Advisory Notes History']}")
 
-# Attendance Chart
-st.markdown("#### Attendance Trend Chart")
-att_vals = [int(x.strip('% ')) for x in student["Attendance History"].split("->")] if "->" in student["Attendance History"] else [student["Attendance"]]
-plt.figure(figsize=(4, 2))
-plt.plot(att_vals, marker='s', color='green')
-plt.title("Attendance Over Time")
-plt.ylabel("% Attendance")
-st.pyplot(plt)
+# Chart Visualization
+fig, ax = plt.subplots()
+ax.bar(["GPA"], [student['GPA']], color='orange')
+ax.set_ylim(0, 4)
+st.pyplot(fig)
 
-# AI Insight
-st.markdown("### 🧠 AI Assistant Insight")
-insight = f"""
-- GPA Trend: {student['GPA History']}
-- Attendance Trend: {student['Attendance History']}
-- Risk History: {student['Risk History']}
-- Goal Progress: {student['Goal History']}
-- Advisory Engagement: {student['Advisory Notes History']}
-"""
-st.info(insight)
+# AI Assistant Insight
+st.subheader("🧠 AI Assistant Insight")
+st.info("High risk likely due to GPA decline, missed sessions, and drop in attendance. Recommend staged recovery plan and tracking.")
 
 # Advising Session Summary
-st.markdown("### 📝 Advising Session Summary")
-report = f"Advising Summary for {student_name}\n\n- Risk Level: {student['Risk Score']}\n- Student Goals: {student['Goals']}\n- Advisor Notes: {student['Notes']}\n\nAI Advisor Recommendations:\n"
-for i, (step, done) in enumerate(completed, start=1):
-    status = "✅ Done" if done else "🔲 Not Done"
-    report += f"Step {i}: {step} — {status}\n"
-report += f"\nAI Insight:\n{insight}\n"
+st.subheader("📋 Advising Session Summary")
+advice_text = f"AI Advisor Plan: {student['Risk Score']} Risk. GPA: {student['GPA']}. Attendance: {student['Attendance']}%. Goals: {student['Goals']}"
+st.text_area("Auto-Generated Report", value=advice_text, height=250)
+st.download_button("📥 Download Session Report", data=advice_text, file_name=f"{student_name}_session.txt", mime="text/plain")
 
-st.text_area("Auto-Generated Report", value=report, height=300)
-st.download_button("Download Session Report", data=report, file_name=f"{student_name}_advising_summary.txt", mime="text/plain")
-
-# Final Narrative
-st.markdown("### 📊 Final AI Student Risk Profile & Narrative Report")
+# Final AI Narrative
+st.subheader("📊 Final AI Student Risk Profile & Narrative Report")
 summary_50 = """
-1. The student profile shows cumulative risk from academic and behavioral metrics.
-2. GPA trajectory highlights gradual academic decline or stabilization issues.
-3. Attendance drop-off may reflect disengagement or external barriers.
-4. Risk classification is data-driven from performance, engagement, and advising history.
-5. Academic goals indicate intent but may not align with current progress trends.
-6. Infrequent advising sessions increase the chance of overlooked issues.
-7. Low GPA restricts access to academic honors and competitive programs.
-8. Missed sessions reduce the student’s opportunity to receive timely support.
-9. Historical GPA fluctuations suggest instability in learning outcomes.
-10. Sustained risk over multiple semesters is a red flag for attrition.
-11. Repeated missed appointments may signal organizational or motivational barriers.
-12. Long-term absenteeism affects GPA and comprehension retention.
-13. Student intention to improve GPA is strong but needs scaffolding.
-14. Risk-level escalation from low to high warrants closer monitoring.
-15. Shift in goals from undefined to academic improvement is positive.
-16. Attendance data points toward periods of strong and weak engagement.
-17. GPA trends below 2.5 suggest structural academic issues.
-18. Success coaching should address academic and life stressors jointly.
-19. External factors like work or caregiving may affect attendance.
-20. Follow-up strategies should include proactive communication.
-21. Insights should inform a custom recovery and retention plan.
-22. Recovery must be staged: stabilize attendance, build skills, track GPA.
-23. Referral to peer mentoring or academic recovery programs is advised.
-24. Missed sessions should trigger early warning systems.
-25. Risk should be tracked monthly with reflection check-ins.
-26. Career alignment can increase student motivation.
-27. Faculty support and flexibility can improve outcomes.
-28. Patterns of disengagement mirror institutional withdrawal predictors.
-29. Connecting with student success centers may build resilience.
-30. Positive feedback loops (reward progress) are key to behavioral change.
-31. Involving guardians or mentors may increase accountability.
-32. Weekly plans and reminders can structure progress.
-33. Students must believe success is possible and supported.
-34. Faculty awareness of risk can lead to better in-class support.
-35. Use of apps or tools may improve organization and time tracking.
-36. Visual goal-setting and GPA dashboards are effective for monitoring.
-37. The plan should include academic workshops and engagement benchmarks.
-38. A timeline to reach GPA goals should be realistic and reviewed.
-39. An AI dashboard can help visualize patterns of risk.
-40. An accountability partner could improve follow-through.
-41. Advising notes should be collaborative and forward-looking.
-42. GPA recovery should start with most impactful classes.
-43. Engagement in one class may rebuild overall confidence.
-44. Short-term wins should be celebrated to build momentum.
-45. AI insights should inform not just risk but growth opportunities.
-46. Risk plan must be signed off and agreed by advisor and student.
-47. Reminders, nudges, and advisor follow-up should be automated.
-48. Students need to feel heard, supported, and empowered.
-49. Success is possible with a structured, compassionate support plan.
-50. The student must receive and understand their recovery roadmap.
+The student profile shows cumulative risk from academic and behavioral metrics. GPA trajectory highlights gradual academic decline or stabilization issues. Attendance drop-off may reflect disengagement or external barriers. Risk classification is data-driven from performance, engagement, and advising history. Academic goals indicate intent but may not align with current progress trends. Infrequent advising sessions increase the chance of overlooked issues. Low GPA restricts access to academic honors and competitive programs. Missed sessions reduce the student’s opportunity to receive timely support. Historical GPA fluctuations suggest instability in learning outcomes. Sustained risk over multiple semesters is a red flag for attrition. Repeated missed appointments may signal organizational or motivational barriers. Long-term absenteeism affects GPA and comprehension retention. Student intention to improve GPA is strong but needs scaffolding. Risk-level escalation from low to high warrants closer monitoring. Shift in goals from undefined to academic improvement is positive. Attendance data points toward periods of strong and weak engagement. GPA trends below 2.5 suggest structural academic issues. Success coaching should address academic and life stressors jointly. External factors like work or caregiving may affect attendance. Follow-up strategies should include proactive communication. Insights should inform a custom recovery and retention plan. Recovery must be staged: stabilize attendance, build skills, track GPA. Referral to peer mentoring or academic recovery programs is advised. Missed sessions should trigger early warning systems. Risk should be tracked monthly with reflection check-ins. Career alignment can increase student motivation. Faculty support and flexibility can improve outcomes. Patterns of disengagement mirror institutional withdrawal predictors. Connecting with student success centers may build resilience. Positive feedback loops (reward progress) are key to behavioral change. Involving guardians or mentors may increase accountability. Weekly plans and reminders can structure progress. Students must believe success is possible and supported. Faculty awareness of risk can lead to better in-class support. Use of apps or tools may improve organization and time tracking. Visual goal-setting and GPA dashboards are effective for monitoring. The plan should include academic workshops and engagement benchmarks. A timeline to reach GPA goals should be realistic and reviewed. An AI dashboard can help visualize patterns of risk. An accountability partner could improve follow-through. Advising notes should be collaborative and forward-looking. GPA recovery should start with most impactful classes. Engagement in one class may rebuild overall confidence. Short-term wins should be celebrated to build momentum. AI insights should inform not just risk but growth opportunities. Risk plan must be signed off and agreed by advisor and student. Reminders, nudges, and advisor follow-up should be automated. Students need to feel heard, supported, and empowered. Success is possible with a structured, compassionate support plan. The student must receive and understand their recovery roadmap.
 """
-st.text_area("📘 Full Narrative Analysis (50 Sentences)", value=summary_50, height=800)
-st.download_button("Download Full AI Risk Profile Report", data=summary_50, file_name=f"{student_name}_AI_Risk_Profile.txt", mime="text/plain")
+st.text_area("📘 Full Narrative Analysis (50 Sentences)", value=summary_50, height=500)
+st.download_button("📥 Download Full AI Risk Profile Report", data=summary_50, file_name=f"{student_name}_AI_Risk_Profile.txt", mime="text/plain")
