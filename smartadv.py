@@ -7,11 +7,11 @@ Original file is located at
     https://colab.research.google.com/drive/1NhVkIv9Vpcj2GYYMbNCLTYbIrlZjngdt
 """
 
-# Import the required module and retry saving the fully revised app code
-import os
+# Reconstruct and enhance the app.py code to include:
+# - Sidebar filters under student dropdown for historical GPA, Attendance, Risk Level, Goals, Notes
+# - GenAI Insight inserted after Advisor Recommendations and before Advising Summary
 
-# Final revised version of Smart Advisor Assistant app with correct logic and formatting
-app_code_final_clean_fixed = """
+app_code_updated = """
 import streamlit as st
 import pandas as pd
 
@@ -31,24 +31,23 @@ students = pd.DataFrame({
     "Advisory Notes History": ["1 missed -> 2 missed", "N/A", "New stress indicators in Chem"]
 })
 
-# Streamlit UI Setup
 st.set_page_config(page_title="Smart Advisor Assistant", layout="wide")
 st.title("Smart Advisor Assistant")
 st.subheader("AI-Powered Academic Risk Monitoring & Action Plans")
 st.markdown("---")
 
-# Sidebar with historical insights
+# Sidebar with student selection and historical filters
 student_name = st.sidebar.selectbox("Select a student", students["Name"])
 student = students[students["Name"] == student_name].iloc[0]
 
-st.sidebar.markdown("### Historical Data")
-st.sidebar.write("GPA History:", student["GPA History"])
-st.sidebar.write("Attendance History:", student["Attendance History"])
-st.sidebar.write("Risk Level History:", student["Risk History"])
-st.sidebar.write("Goal History:", student["Goal History"])
-st.sidebar.write("Advisory Notes History:", student["Advisory Notes History"])
+st.sidebar.markdown("### Historical Metrics")
+st.sidebar.write("📘 GPA History:", student["GPA History"])
+st.sidebar.write("🕒 Attendance History:", student["Attendance History"])
+st.sidebar.write("⚠️ Risk Level History:", student["Risk History"])
+st.sidebar.write("🎯 Goal History:", student["Goal History"])
+st.sidebar.write("📝 Advisor Notes History:", student["Advisory Notes History"])
 
-# Student Current Summary
+# Current Student Summary
 st.markdown("### Student Performance Summary")
 st.write(f"GPA: {student['GPA']}")
 st.write(f"Attendance: {student['Attendance']}%")
@@ -56,7 +55,7 @@ st.write(f"Risk Level: {student['Risk Score']}")
 st.write(f"Goals: {student['Goals']}")
 st.write(f"Advisor Notes: {student['Notes']}")
 
-# Recommendation Logic
+# Define AI Recommendation Logic
 def get_advice(risk):
     if risk == "High":
         return "Immediate tutoring referrals\\nWeekly advising check-ins\\nConnect to mental health/counseling\\nSet GPA target (e.g., 2.5 next semester)"
@@ -65,35 +64,34 @@ def get_advice(risk):
     else:
         return "Recommend internship & honors advising\\nGrad school prep resources\\nMonthly check-ins optional"
 
-# Recommendations Section
+# Advisor Recommendations
 st.markdown("### Advisor Recommendations")
 st.markdown(f"{student['Risk Score']} Risk Plan:")
 st.markdown(get_advice(student["Risk Score"]).replace("\\n", "\\n- "), unsafe_allow_html=True)
 
-# AI Assistant Insight Section
+# GenAI Insight Analysis
 st.markdown("### AI Assistant Insight")
-ai_insight = f'''
-Reasoning Behind Change Detection (GenAI Analysis):
+ai_reasoning = f'''
+📊 **GenAI Reasoning on Historical Change Patterns**
 
-- GPA History: {student["GPA History"]} - GPA decline may reflect academic struggle or course load imbalance.
-- Attendance History: {student["Attendance History"]} - Lower attendance often correlates with disengagement or external stress.
-- Risk Score History: {student["Risk History"]} - The shift in risk suggests cumulative academic and behavioral concerns.
-- Goal History: {student["Goal History"]} - Evolution of goals may imply growing clarity, confusion, or shifting interests.
-- Advisory Notes History: {student["Advisory Notes History"]} - Increased advising notes reflect concern and need for structured support.
+- **GPA History:** {student["GPA History"]} → Decrease suggests academic struggle or external pressures.
+- **Attendance History:** {student["Attendance History"]} → Drops often reflect disengagement or life factors.
+- **Risk Score History:** {student["Risk History"]} → Increasing risk signals compounding academic/behavioral stress.
+- **Goal History:** {student["Goal History"]} → Goal shift can reveal clarity, uncertainty, or new ambitions.
+- **Advisor Notes History:** {student["Advisory Notes History"]} → New alerts prompt closer support and follow-up.
 
-GenAI Insight: A holistic pattern across these indicators suggests early-stage academic risk, needing coordinated interventions: academic coaching, health services, and goal-setting realignment.
+🧠 **GenAI Insight:** These cross-domain patterns indicate where proactive advising and wraparound services can prevent escalation of academic risk.
 '''
-st.info(ai_insight)
+st.info(ai_reasoning)
 
-# Advising Session Summary
+# Advising Summary and Report
 advice_text = get_advice(student['Risk Score']).replace("\\n", "\\n")
 report = (
     f"Advising Summary for {student_name}\\n\\n"
     f"- Risk Level: {student['Risk Score']}\\n"
     f"- Student Goals: {student['Goals']}\\n"
     f"- Advisor Notes: {student['Notes']}\\n\\n"
-    "AI Advisor Recommendation:\\n"
-    f"{advice_text}"
+    f"AI Advisor Recommendation:\\n{advice_text}"
 )
 
 st.markdown("### Advising Session Summary")
@@ -101,10 +99,8 @@ st.text_area("Auto-Generated Report", value=report, height=250)
 st.download_button("Download Session Report", data=report, file_name=f"{student_name}_advising_summary.txt", mime="text/plain")
 """
 
-# Final fix: correct the indentation block after 'with' and remove any hanging strings
-os.makedirs("smart_advisor_app", exist_ok=True)
-
+# Save updated version
 with open("smart_advisor_app/app.py", "w") as f:
-    f.write(app_code_final_clean_fixed)
+    f.write(app_code_updated)
 
 "smart_advisor_app/app.py"
