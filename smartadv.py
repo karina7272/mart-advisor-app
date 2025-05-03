@@ -7,11 +7,10 @@ Original file is located at
     https://colab.research.google.com/drive/1NhVkIv9Vpcj2GYYMbNCLTYbIrlZjngdt
 """
 
-# Save this as app.py or run in Colab with Streamlit
 import streamlit as st
 import pandas as pd
 
-# ----- Simulated Dummy Data -----
+# Simulated Dummy Data
 students = pd.DataFrame({
     "Student ID": [1001, 1002, 1003],
     "Name": ["Alice Chen", "David Lee", "Sara Khan"],
@@ -19,67 +18,76 @@ students = pd.DataFrame({
     "Attendance": [78, 95, 85],
     "Risk Score": ["High", "Low", "Medium"],
     "Goals": ["Improve GPA to 3.0", "Graduate with honors", "Explore career in healthcare"],
-    "Notes": ["Missed 2 advising sessions", "Engaged, on track", "Unclear on major, stressed in Chem"]
+    "Notes": ["Missed 2 advising sessions", "Engaged, on track", "Unclear on major, stressed in Chem"],
+    "GPA History": ["2.5 -> 2.3", "3.4 -> 3.5", "3.0 -> 2.7"],
+    "Attendance History": ["85% -> 78%", "93% -> 95%", "90% -> 85%"],
+    "Risk History": ["Medium -> High", "Low -> Low", "Low -> Medium"],
+    "Goal History": ["None -> Improve GPA to 3.0", "Same", "Undecided -> Explore healthcare"],
+    "Advisory Notes History": ["1 missed -> 2 missed", "N/A", "New stress indicators in Chem"]
 })
 
-# ----- Streamlit App Layout -----
-st.set_page_config(page_title="Smart Advisor Assistant", layout="centered")
-st.markdown("<h1 style='text-align: center;'>Smart Advisor Assistant</h1>", unsafe_allow_html=True)
-st.markdown("<h4 style='text-align: center; color: #555;'>AI-Powered Academic Risk Monitoring & Action Plans</h4>", unsafe_allow_html=True)
+# Streamlit UI
+st.set_page_config(page_title="Smart Advisor Assistant", layout="wide")
+st.title("Smart Advisor Assistant")
+st.subheader("AI-Powered Academic Risk Monitoring & Action Plans")
 st.markdown("---")
 
-# ----- Sidebar for Student Selection -----
-student_name = st.sidebar.selectbox("🔍 Select a student", students["Name"])
+# Sidebar Filters
+student_name = st.sidebar.selectbox("🎓 Select a student", students["Name"])
 student = students[students["Name"] == student_name].iloc[0]
+st.sidebar.markdown("### 📈 Historical Data")
+st.sidebar.write(f"**GPA History:** {student['GPA History']}")
+st.sidebar.write(f"**Attendance History:** {student['Attendance History']}")
+st.sidebar.write(f"**Risk Level History:** {student['Risk History']}")
+st.sidebar.write(f"**Goal History:** {student['Goal History']}")
+st.sidebar.write(f"**Advisory Notes History:** {student['Advisory Notes History']}")
 
-# ----- Student Summary -----
-st.subheader("🎓 Student Performance Summary")
+# Student Summary
+st.markdown("### 🧾 Student Performance Summary")
 st.write(f"**GPA:** {student['GPA']}")
 st.write(f"**Attendance:** {student['Attendance']}%")
 st.write(f"**Risk Level:** {student['Risk Score']}")
 st.write(f"**Goals:** {student['Goals']}")
 st.write(f"**Advisor Notes:** {student['Notes']}")
 
-# ----- AI-Generated Advisor Plan -----
+# Recommendations
 def get_advice(risk):
     if risk == "High":
-        return """**High Risk Plan:**
-- Immediate tutoring referrals
-- Weekly advising check-ins
-- Connect to mental health/counseling
-- Set GPA target (e.g., 2.5 next semester)"""
+        return "Immediate tutoring referrals\nWeekly advising check-ins\nConnect to mental health/counseling\nSet GPA target (e.g., 2.5 next semester)"
     elif risk == "Medium":
-        return """**Medium Risk Plan:**
-- Career counseling for major clarity
-- Shadowing or career fair participation
-- Attend study strategy workshop
-- Follow-up in 2 weeks"""
+        return "Career exploration support\nStress management resources\nMonitor GPA monthly\nAdvisor follow-up in 2 weeks"
     else:
-        return """**Low Risk Plan:**
-- Encourage internships or research
-- Offer honors track advising
-- Support grad school planning
-- Recognize student achievement"""
+        return "Recommend internship & honors advising\nGrad school prep resources\nMonthly check-ins optional"
 
-st.subheader("💡 Advisor Recommendations")
-st.markdown(get_advice(student["Risk Score"]))
+st.markdown("### 💡 Advisor Recommendations")
+st.markdown(f"**{student['Risk Score']} Risk Plan:**")
+st.markdown(get_advice(student["Risk Score"]).replace("\n", "\n- "), unsafe_allow_html=True)
 
-# ----- Auto-Generated Report -----
-st.subheader("📝 Advising Session Summary")
+# AI Assistant Insight
+st.markdown("### 🤖 AI Assistant Insight")
+insight_text = f"""
+**Changes Detected:**
+- GPA dropped from {student["GPA History"]} indicating academic struggle.
+- Attendance decreased: {student["Attendance History"]} linked to engagement decline.
+- Risk escalated: {student["Risk History"]} signals intervention need.
+- Goal update: {student["Goal History"]} suggests changing motivation or clarity.
+- Advisory Notes: {student["Advisory Notes History"]} require follow-up.
+
+**AI Analysis:**
+The historical trends reflect a change in performance and engagement. Recommend a proactive, multi-modal support plan: academic coaching, mental health referral, and goal-setting alignment.
+"""
+st.info(insight_text)
+
+# Advising Report
+st.markdown("### 📄 Advising Session Summary")
 report = f"""
-**Advising Summary for {student_name}**
-
-- GPA: {student['GPA']}
-- Attendance: {student['Attendance']}%
 - Risk Level: {student['Risk Score']}
 - Student Goals: {student['Goals']}
 - Advisor Notes: {student['Notes']}
 
 **AI Advisor Recommendation:**
-{get_advice(student["Risk Score"])}
+**{student['Risk Score']} Risk Plan:**
+{get_advice(student['Risk Score'])}
 """
-
 st.text_area("Auto-Generated Report", value=report, height=250)
-
-# ----- Download Option -----
-st.download_button(label="📥 Download Session Report", data=report, file_name=f"{student_name}_advising_summary.txt", mime="text/plain")
+st.download_button("📥 Download Session Report", data=report, file_name=f"{student_name}_advising_summary.txt", mime="text/plain")
