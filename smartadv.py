@@ -101,9 +101,10 @@ st.text_area("Auto-Generated Report", value=report, height=250)
 st.download_button("Download Session Report", data=report, file_name=f"{student_name}_advising_summary.txt", mime="text/plain")
 """
 
-# Create directory and save app.py
-os.makedirs("/mnt/data/smart_advisor_app", exist_ok=True)
-with open("/mnt/data/smart_advisor_app/app.py", "w") as f:
+# Final fix: correct the indentation block after 'with' and remove any hanging strings
+os.makedirs("smart_advisor_app", exist_ok=True)
+
+with open("smart_advisor_app/app.py", "w") as f:
     f.write(app_code_final_clean_fixed)
 
-"/mnt/data/smart_advisor_app/app.py"
+"smart_advisor_app/app.py"
